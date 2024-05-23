@@ -7,18 +7,18 @@ namespace SimpleBanking.API.Controllers
     [Route("/")]
     public class BalanceController : ControllerBase
     {
-        private Dictionary<string, Account> accounts;
-        public void SetAccounts(Dictionary<string, Account> accounts)
+        private readonly Dictionary<string, Account> _accounts;
+        public BalanceController(Dictionary<string, Account> accounts)
         {
-            this.accounts = accounts;
+            _accounts = accounts;
         }
 
         [HttpGet("balance")]
         public IActionResult GetBalance([FromQuery] string account_id) 
         { 
-            if (accounts.ContainsKey(account_id))
+            if (_accounts.ContainsKey(account_id))
             {
-                return Ok(accounts[account_id].Balance);
+                return Ok(_accounts[account_id].Balance);
             }
             else
             {
@@ -32,19 +32,19 @@ namespace SimpleBanking.API.Controllers
             switch (eventDetails.Type)
             {
                 case "deposit": 
-                    if (!accounts.ContainsKey(eventDetails.Destination))
+                    if (!_accounts.ContainsKey(eventDetails.Destination))
                     {
-                        accounts[eventDetails.Destination] = new Account();
+                        _accounts[eventDetails.Destination] = new Account();
                     }
 
-                    accounts[eventDetails.Destination].Balance += eventDetails.Amount;
-                    return Created("", new { destination = accounts[eventDetails.Destination] });
+                    _accounts[eventDetails.Destination].Balance += eventDetails.Amount;
+                    return Created("", new { destination = _accounts[eventDetails.Destination] });
 
                 case "withdraw":
-                    if (accounts.ContainsKey(eventDetails.Origin)) 
+                    if (_accounts.ContainsKey(eventDetails.Origin)) 
                     {
-                        accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
-                        return Created("", new { origin = accounts[eventDetails.Origin] });
+                        _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
+                        return Created("", new { origin = _accounts[eventDetails.Origin] });
                     }
                     else
                     {
@@ -52,20 +52,20 @@ namespace SimpleBanking.API.Controllers
                     }
 
                 case "transfer":
-                    if (accounts.ContainsKey(eventDetails.Origin))
+                    if (_accounts.ContainsKey(eventDetails.Origin))
                     {
-                        if (!accounts.ContainsKey(eventDetails.Destination))
+                        if (!_accounts.ContainsKey(eventDetails.Destination))
                         {
-                            accounts[eventDetails.Destination] = new Account { Id = eventDetails.Destination, Balance = 0 };
+                            _accounts[eventDetails.Destination] = new Account { Id = eventDetails.Destination, Balance = 0 };
                         }
 
-                        accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
-                        accounts[eventDetails.Destination].Balance = eventDetails.Amount;
+                        _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
+                        _accounts[eventDetails.Destination].Balance = eventDetails.Amount;
 
                         return Created("", new
                         {
-                            origin = accounts[eventDetails.Origin],
-                            destination = accounts[eventDetails.Destination]
+                            origin = _accounts[eventDetails.Origin],
+                            destination = _accounts[eventDetails.Destination]
                         });
                     }
                     else

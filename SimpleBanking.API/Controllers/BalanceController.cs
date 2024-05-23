@@ -58,16 +58,26 @@ namespace SimpleBanking.API.Controllers
                     return NotFound(0);
 
                 case "transfer":
-                    if (_accounts.ContainsKey(eventDetails.Origin) && _accounts.ContainsKey(eventDetails.Destination))
+                    if (_accounts.ContainsKey(eventDetails.Origin))
                     {
-                        _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
-                        _accounts[eventDetails.Destination].Balance += eventDetails.Amount;
-
-                        return Created("", new
+                        if (!_accounts.ContainsKey(eventDetails.Destination))
                         {
-                            origin = _accounts[eventDetails.Origin],
-                            destination = _accounts[eventDetails.Destination]
-                        });
+                            _accounts[eventDetails.Destination] = new Account { Id = eventDetails.Destination, Balance = 0 };
+                        }
+
+                        if (_accounts[eventDetails.Origin].Balance >= eventDetails.Amount)
+                        {
+                            _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
+                            _accounts[eventDetails.Destination].Balance += eventDetails.Amount;
+
+                            return Created("", new
+                            {
+                                origin = _accounts[eventDetails.Origin],
+                                destination = _accounts[eventDetails.Destination]
+                            });
+                        }
+
+                        return BadRequest("Insufficient balance in the origin account.");
                     }
 
                     return NotFound(0);

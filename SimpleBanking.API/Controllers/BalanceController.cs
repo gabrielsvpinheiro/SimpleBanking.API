@@ -16,6 +16,13 @@ namespace SimpleBanking.API.Controllers
             _accounts = accounts;
         }
 
+        [HttpPost("reset")]
+        public IActionResult Reset()
+        {
+            _accounts.Clear();
+            return Ok();
+        }
+
         [HttpGet("balance")]
         public IActionResult GetBalance([FromQuery] string account_id)
         {
@@ -23,10 +30,8 @@ namespace SimpleBanking.API.Controllers
             {
                 return Ok(_accounts[account_id].Balance);
             }
-            else
-            {
-                return NotFound(0);
-            }
+            
+            return NotFound(0);
         }
 
         [HttpPost("event")]

@@ -2,20 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using SimpleBanking.API.Models;
 using SimpleBanking.API.Controllers;
+using Newtonsoft.Json;
+using System.Text;
+using System.Net.Http;
 
 namespace SimpleBanking.API.Tests.Controllers
 {
     public class BalanceControllerTests : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly BalanceController _controller;
+        private readonly HttpClient _client;
 
-        public BalanceControllerTests()
+        public BalanceControllerTests(WebApplicationFactory<Program> factory)
         {
             var accounts = new Dictionary<string, Account>
             {
                 { "1234", new Account { Id = "1234", Balance = 100 } }
             };
             _controller = new BalanceController(accounts);
+            _client = factory.CreateClient();
         }
 
         [Fact]
@@ -37,6 +42,17 @@ namespace SimpleBanking.API.Tests.Controllers
             var result = _controller.GetBalance(account_id);
 
             Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task TestTransferFromNonExistingAccount()
+        {
+            var json = JsonConvert.SerializeObject(new { type = "transfer", origin = "200", amount = 15, destination = "300" });
+            var response = await _client.PostAsync("/event", new StringContent(json, Encoding.UTF8, "application/json"));
+            Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Equal("0", content);
         }
     }
 }

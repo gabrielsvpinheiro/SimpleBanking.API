@@ -1,22 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using SimpleBanking.API;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Mvc;
+using SimpleBanking.API.Models;
+using SimpleBanking.API.Controllers;
 
 namespace SimpleBanking.API.Tests.Controllers
 {
     public class BalanceControllerTests : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
+        private readonly BalanceController _client;
 
-        public BalanceControllerTests(WebApplicationFactory<Program> factory) 
+        public BalanceControllerTests() 
         {
-            _client = factory.CreateClient();
+            _client = new BalanceController();
+        }
+
+        [Fact]
+        public void ShouldReturnOkWithCorrectBalanceWhenAccountExists()
+        {
+            var account_id = "1234";
+            var accounts = new Dictionary<string, Account>
+            {
+                { account_id, new Account { Balance = 100 } }
+            };
+            _client.SetAccounts(accounts);
+
+            var result = _client.GetBalance(account_id);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(100, okResult.Value);
+        }
+
+        [Fact]
+        public void ShouldReturnNotFoundWhenAccountDoesNotExist()
+        {
+            var account_id = "456";
+            var accounts = new Dictionary<string, Account>();
+            _client.SetAccounts(accounts);
+
+            var result = _client.GetBalance(account_id);
+
+            Assert.IsType<NotFoundObjectResult>(result);
         }
     }
 }

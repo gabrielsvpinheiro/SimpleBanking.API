@@ -2,11 +2,6 @@ using SimpleBanking.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.ConfigureKestrel((context, options) =>
-{
-    options.ListenAnyIP(3000);
-});
-
 builder.Services.AddSingleton<Dictionary<string, Account>>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

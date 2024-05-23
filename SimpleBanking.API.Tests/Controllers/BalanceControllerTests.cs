@@ -24,6 +24,17 @@ namespace SimpleBanking.API.Tests.Controllers
         }
 
         [Fact]
+        public async Task Reset_ReturnsOk()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "/reset");
+
+            var response = await _client.SendAsync(request);
+
+            response.EnsureSuccessStatusCode(); 
+            Assert.Equal("OK", response.ReasonPhrase);
+        }
+
+        [Fact]
         public void ShouldReturnOkWithCorrectBalanceWhenAccountExists()
         {
             var account_id = "1234";

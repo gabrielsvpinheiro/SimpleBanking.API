@@ -20,7 +20,7 @@ namespace SimpleBanking.API.Controllers
         public IActionResult Reset()
         {
             _accounts.Clear();
-            return Ok();
+            return Ok("OK");
         }
 
         [HttpGet("balance")]

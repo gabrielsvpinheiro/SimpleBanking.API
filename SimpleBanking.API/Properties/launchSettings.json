@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SimpleBanking.API Development": {
+    "SimpleBanking.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -17,15 +17,6 @@
       "applicationUrl": "https://localhost:7255;http://localhost:5266",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "SimpleBanking.API Production": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "https://localhost:3000",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
     "IIS Express": {

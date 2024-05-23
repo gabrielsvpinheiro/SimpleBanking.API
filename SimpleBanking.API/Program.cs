@@ -7,12 +7,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.WebHost.ConfigureKestrel((context, options) =>
-{
-    var kestrelSection = context.Configuration.GetSection("Kestrel");
-    options.Configure(kestrelSection);
-});
-
 var app = builder.Build();
 
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

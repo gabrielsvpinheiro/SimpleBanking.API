@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBanking.API", "SimpleBanking.API\SimpleBanking.API.csproj", "{E25C942E-35A5-4A26-BF97-91047CE9C893}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBanking.API.Tests", "SimpleBanking.API.Tests\SimpleBanking.API.Tests.csproj", "{5D60DA66-B602-4E6D-81D9-F6214AB0578C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{E25C942E-35A5-4A26-BF97-91047CE9C893}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E25C942E-35A5-4A26-BF97-91047CE9C893}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E25C942E-35A5-4A26-BF97-91047CE9C893}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D60DA66-B602-4E6D-81D9-F6214AB0578C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D60DA66-B602-4E6D-81D9-F6214AB0578C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D60DA66-B602-4E6D-81D9-F6214AB0578C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D60DA66-B602-4E6D-81D9-F6214AB0578C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

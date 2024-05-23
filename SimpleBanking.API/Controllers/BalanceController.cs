@@ -7,7 +7,11 @@ namespace SimpleBanking.API.Controllers
     [Route("/")]
     public class BalanceController : ControllerBase
     {
-        private static Dictionary<string, Account> accounts = new Dictionary<string, Account>();
+        private Dictionary<string, Account> accounts;
+        public void SetAccounts(Dictionary<string, Account> accounts)
+        {
+            this.accounts = accounts;
+        }
 
         [HttpGet("balance")]
         public IActionResult GetBalance([FromQuery] string account_id) 

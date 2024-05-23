@@ -30,7 +30,7 @@ namespace SimpleBanking.API.Controllers
             {
                 return Ok(_accounts[account_id].Balance);
             }
-            
+
             return NotFound(0);
         }
 
@@ -54,10 +54,8 @@ namespace SimpleBanking.API.Controllers
                         _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
                         return Created("", new { origin = _accounts[eventDetails.Origin] });
                     }
-                    else
-                    {
-                        return NotFound(0);
-                    }
+
+                    return NotFound(0);
 
                 case "transfer":
                     if (_accounts.ContainsKey(eventDetails.Origin))
@@ -76,10 +74,9 @@ namespace SimpleBanking.API.Controllers
                             destination = _accounts[eventDetails.Destination]
                         });
                     }
-                    else
-                    {
-                        return NotFound(0);
-                    }
+                    
+                    return NotFound(0);
+
                 default:
                     return BadRequest();
             }

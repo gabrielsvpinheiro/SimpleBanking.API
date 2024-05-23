@@ -21,5 +21,56 @@ namespace SimpleBanking.API.Controllers
                 return NotFound(0);
             }
         }
+
+        [HttpPost("event")]
+        public IActionResult PostEvent([FromBody] Event eventDetails)
+        {
+            switch (eventDetails.Type)
+            {
+                case "deposit": 
+                    if (!accounts.ContainsKey(eventDetails.Destination))
+                    {
+                        accounts[eventDetails.Destination] = new Account();
+                    }
+
+                    accounts[eventDetails.Destination].Balance += eventDetails.Amount;
+                    return Created("", new { destination = accounts[eventDetails.Destination] });
+
+                case "withdraw":
+                    if (accounts.ContainsKey(eventDetails.Origin)) 
+                    {
+                        accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
+                        return Created("", new { origin = accounts[eventDetails.Origin] });
+                    }
+                    else
+                    {
+                        return NotFound(0);
+                    }
+
+                case "transfer":
+                    if (accounts.ContainsKey(eventDetails.Origin))
+                    {
+                        if (!accounts.ContainsKey(eventDetails.Destination))
+                        {
+                            accounts[eventDetails.Destination] = new Account { Id = eventDetails.Destination, Balance = 0 };
+                        }
+
+                        accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
+                        accounts[eventDetails.Destination].Balance = eventDetails.Amount;
+
+                        return Created("", new
+                        {
+                            origin = accounts[eventDetails.Origin],
+                            destination = accounts[eventDetails.Destination]
+                        });
+                    }
+                    else
+                    {
+                        return NotFound(0);
+                    }
+                default:
+                    return BadRequest();
+            }
+        }
     }
 }

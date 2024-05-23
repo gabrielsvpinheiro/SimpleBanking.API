@@ -20,7 +20,7 @@ namespace SimpleBanking.API.Controllers
         public IActionResult Reset()
         {
             _accounts.Clear();
-            return Ok("OK");
+            return Ok();
         }
 
         [HttpGet("balance")]
@@ -58,13 +58,8 @@ namespace SimpleBanking.API.Controllers
                     return NotFound(0);
 
                 case "transfer":
-                    if (_accounts.ContainsKey(eventDetails.Origin))
+                    if (_accounts.ContainsKey(eventDetails.Origin) && _accounts.ContainsKey(eventDetails.Destination))
                     {
-                        if (!_accounts.ContainsKey(eventDetails.Destination))
-                        {
-                            _accounts[eventDetails.Destination] = new Account { Id = eventDetails.Destination, Balance = 0 };
-                        }
-
                         _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
                         _accounts[eventDetails.Destination].Balance += eventDetails.Amount;
 
@@ -74,7 +69,7 @@ namespace SimpleBanking.API.Controllers
                             destination = _accounts[eventDetails.Destination]
                         });
                     }
-                    
+
                     return NotFound(0);
 
                 default:

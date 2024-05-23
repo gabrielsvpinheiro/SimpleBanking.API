@@ -1,5 +1,8 @@
+using SimpleBanking.API.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<Dictionary<string, Account>>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

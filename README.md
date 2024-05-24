@@ -30,6 +30,10 @@ Creates a new transaction event, such as deposit, withdrawal, or transfer.
 - `destination`: ID of the destination account (required for `deposit` and `transfer`).
 - `amount`: Amount of the transaction.
 
+## Swagger Documentation
+
+![image](https://github.com/gabrielsvpinheiro/SimpleBanking.API/assets/81546353/9222b985-b706-4497-bf0b-041fe78b1b1d)
+
 ## Testing
 
 To run the automated tests, execute `dotnet test` in the test project directory.

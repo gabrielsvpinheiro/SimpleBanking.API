@@ -26,7 +26,9 @@ namespace SimpleBanking.API.Controllers
         public IActionResult Reset()
         {
             _accounts.Clear();
-            return Ok("OK");
+            var response = "OK";
+
+            return Ok(response);
         }
 
         [HttpGet("balance")]

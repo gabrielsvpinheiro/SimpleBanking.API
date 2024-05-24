@@ -10,10 +10,16 @@ namespace SimpleBanking.API.Controllers
     public class BalanceController : ControllerBase
     {
         private readonly Dictionary<string, Account> _accounts;
+        private readonly IDepositService _depositService;
+        private readonly IWithdrawService _withdrawService;
+        private readonly ITransferService _transferService;
 
-        public BalanceController(Dictionary<string, Account> accounts)
+        public BalanceController(Dictionary<string, Account> accounts, IDepositService depositService, IWithdrawService withdrawService, ITransferService transferService)
         {
             _accounts = accounts;
+            _depositService = depositService;
+            _withdrawService = withdrawService;
+            _transferService = transferService;
         }
 
         [HttpPost("reset")]
@@ -37,50 +43,22 @@ namespace SimpleBanking.API.Controllers
         [HttpPost("event")]
         public IActionResult PostEvent([FromBody] Event eventDetails)
         {
-            switch (eventDetails.Type)
+            const string eventDeposit = "deposit";
+            const string eventWithdraw = "withdraw";
+            const string eventTransfer = "transfer";
+
+            string eventType = eventDetails.Type;
+
+            switch (eventType)
             {
-                case "deposit":
-                    if (!_accounts.ContainsKey(eventDetails.Destination))
-                    {
-                        _accounts[eventDetails.Destination] = new Account { Id = eventDetails.Destination, Balance = 0 };
-                    }
+                case eventDeposit:
+                    return _depositService.ProcessDeposit(eventDetails, _accounts);
 
-                    _accounts[eventDetails.Destination].Balance += eventDetails.Amount;
-                    return Created("", new { destination = _accounts[eventDetails.Destination] });
+                case eventWithdraw:
+                    return _withdrawService.ProcessWithdraw(eventDetails, _accounts);
 
-                case "withdraw":
-                    if (_accounts.ContainsKey(eventDetails.Origin))
-                    {
-                        _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
-                        return Created("", new { origin = _accounts[eventDetails.Origin] });
-                    }
-
-                    return NotFound(0);
-
-                case "transfer":
-                    if (_accounts.ContainsKey(eventDetails.Origin))
-                    {
-                        if (!_accounts.ContainsKey(eventDetails.Destination))
-                        {
-                            _accounts[eventDetails.Destination] = new Account { Id = eventDetails.Destination, Balance = 0 };
-                        }
-
-                        if (_accounts[eventDetails.Origin].Balance >= eventDetails.Amount)
-                        {
-                            _accounts[eventDetails.Origin].Balance -= eventDetails.Amount;
-                            _accounts[eventDetails.Destination].Balance += eventDetails.Amount;
-
-                            return Created("", new
-                            {
-                                origin = _accounts[eventDetails.Origin],
-                                destination = _accounts[eventDetails.Destination]
-                            });
-                        }
-
-                        return BadRequest("Insufficient balance in the origin account.");
-                    }
-
-                    return NotFound(0);
+                case eventTransfer:
+                    return _transferService.ProcessTransfer(eventDetails, _accounts);
 
                 default:
                     return BadRequest();
